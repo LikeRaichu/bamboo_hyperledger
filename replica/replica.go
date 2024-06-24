@@ -3,8 +3,11 @@ package replica
 import (
 	"encoding/gob"
 	"fmt"
+
 	fhs "github.com/gitferry/bamboo/fasthostuff"
 	"github.com/gitferry/bamboo/lbft"
+
+	// "github.com/gitferry/bamboo/hyperledger"
 	"time"
 
 	"go.uber.org/atomic"
@@ -92,6 +95,8 @@ func NewReplica(id identity.NodeID, alg string, isByz bool) *Replica {
 
 	// Is there a better way to reduce the number of parameters?
 	switch alg {
+	// case "hyperledger":
+	// 	r.Safety = hotstuff.NewHyperLedger(r.Node, r.pm, r.Election, r.committedBlocks, r.forkedBlocks)
 	case "hotstuff":
 		r.Safety = hotstuff.NewHotStuff(r.Node, r.pm, r.Election, r.committedBlocks, r.forkedBlocks)
 	case "tchs":

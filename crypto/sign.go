@@ -3,7 +3,9 @@ package crypto
 import (
 	"crypto/ecdsa"
 	"crypto/elliptic"
+	"crypto/rand"
 	"errors"
+
 	"github.com/gitferry/bamboo/config"
 	"github.com/gitferry/bamboo/identity"
 )
@@ -67,7 +69,7 @@ func SetKeys() error {
 	pubKeys = make([]PublicKey, config.GetConfig().N())
 	var err error
 	for i := 0; i < config.GetConfig().N(); i++ {
-		keys[i], err = GenerateKey(config.GetConfig().GetSignatureScheme(), identity.NewNodeID(i+1))
+		keys[i], err = GenerateKey(config.GetConfig().GetSignatureScheme())
 		if err != nil {
 			return err
 		}
@@ -76,11 +78,11 @@ func SetKeys() error {
 	return nil
 }
 
-func GenerateKey(signer string, id identity.NodeID) (PrivateKey, error) {
+func GenerateKey(signer string) (PrivateKey, error) {
 	if signer == ECDSA_P256 {
 		pubkeyCurve := elliptic.P256()
 		// use static id
-		priv, err := ecdsa.GenerateKey(pubkeyCurve, &StaticRand{id})
+		priv, err := ecdsa.GenerateKey(pubkeyCurve, rand.Reader)
 		if err != nil {
 			return nil, err
 		}
